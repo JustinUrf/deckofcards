@@ -6,7 +6,7 @@ class Card:
     def __init__(self, type):
       self.type = type
       
-def generate_deck(numberOption, numberStarter):
+def generate_deck(numberOption, numberStarter, numberKiriha):
   cards = [] #Your deck
   
   for x in range(numberOption):
@@ -15,27 +15,13 @@ def generate_deck(numberOption, numberStarter):
   for x in range(numberStarter):
     cards.append(Card("starter"))
     
+  for x in range(numberKiriha):
+    cards.append(Card("kiriha"))
+    
   while len(cards) < 50:
     cards.append(Card("Generic"))
     
   return cards
-
-
-# def brick_checker(numberStarter, firstOrSecond): Inneficient memory usage to create a deck multiple times. Instead made a function that asks for a deck as a parameter.
-#   deck = generate_deck(0, numberStarter)
-#   random.shuffle(deck)
-  
-#   if firstOrSecond == "first":
-#     startingHand = deck[0:5]
-#   else:
-#     startingHand = deck[0:6]
-  
-#   for i in range(len(startingHand)):
-#     if startingHand[i].type == "starter":
-#       return False
-    
-#   return True
-
 
 
 def brick_checker_with_mulligan(deck, firstOrSecond):
@@ -64,10 +50,37 @@ def brick_checker_with_mulligan(deck, firstOrSecond):
   
   return False
 
-deck = generate_deck(12,14)
+deck = generate_deck(12,9,8)
 
+def kiriha(deck, firstOrSecond):
+  newDeck = deck
+  np.random.shuffle(newDeck)
+  
+  if firstOrSecond == "first":
+    kirihaSearch = newDeck[6:12]
+  else:
+    kirihaSearch = newDeck[7:13]
+    
+  for i in range(len(kirihaSearch)):
+    if kirihaSearch[i].type == "kiriha":
+      return True
+    
+  return False
+    
 
+kirihaResult = {
+  "yeah": 0,
+  "no": 0,
+}
 
+for i in range(10000):
+  flag = kiriha(deck, "first")
+  if flag == True:
+    kirihaResult["yeah"] += 1
+  else:
+    kirihaResult["no"] += 1  
+
+print(kirihaResult)
   
 brickResult = {
   "brick": 0,
@@ -81,4 +94,4 @@ for i in range(10000):
   else:
     brickResult["brick"] += 1
 
-print("Had a starter in hand:", brickResult["notBrick"]/ (brickResult["brick"] + brickResult["notBrick"])*100, "% of the time")
+print("Had a Rookie in hand:", brickResult["notBrick"]/ (brickResult["brick"] + brickResult["notBrick"])*100, "% of the time")
